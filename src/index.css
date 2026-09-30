@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-papel: #eef1f5;
+  --color-tinta: #1b2433;
+  --color-suave: #5b667a;
+  --color-linea: #d5dbe5;
+  --color-cobalto: #2f5bea;
+  --font-titulo: "Bricolage Grotesque", sans-serif;
+  --font-texto: "Public Sans", sans-serif;
+}
+
+body {
+  @apply bg-papel text-tinta font-texto;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-cobalto);
+  outline-offset: 3px;
+}
