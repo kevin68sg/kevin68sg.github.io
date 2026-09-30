@@ -1,60 +1,132 @@
 @import "tailwindcss";
 
-/* Tokens del tema: Tailwind genera bg-fondo, text-neon, border-linea, etc. */
-@theme {
-  --color-fondo: #030d09;               /* verde casi negro */
-  --color-cristal: rgba(20, 60, 44, 0.35); /* superficie translúcida */
-  --color-linea: rgba(57, 255, 154, 0.28); /* bordes neón suaves */
-  --color-neon: #39ff9a;                /* verde tecnológico principal */
-  --color-neon2: #12d6b0;               /* verde azulado secundario */
-  --color-texto: #e8fff3;
-  --color-suave: #8fb8a4;
+/* ===== Paleta por tema: el modo se elige con <html data-theme="dark|light"> ===== */
+:root {
+  --c-fondo: #030d09;
+  --c-cristal: rgba(20, 60, 44, 0.35);
+  --c-linea: rgba(57, 255, 154, 0.28);
+  --c-neon: #39ff9a;
+  --c-neon2: #12d6b0;
+  --c-texto: #e8fff3;
+  --c-suave: #8fb8a4;
+  --glow: 57 255 154;                       /* tripleta RGB para halos: rgb(var(--glow) / .3) */
+  --marco-a: rgba(10, 40, 28, 0.55);
+  --marco-b: rgba(3, 13, 9, 0.6);
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  --c-fondo: #eefaf3;
+  --c-cristal: rgba(255, 255, 255, 0.65);
+  --c-linea: rgba(6, 120, 68, 0.3);
+  --c-neon: #067a44;                        /* verde más oscuro para mantener el contraste */
+  --c-neon2: #08806d;
+  --c-texto: #06251a;
+  --c-suave: #3f6656;
+  --glow: 6 122 68;
+  --marco-a: rgba(255, 255, 255, 0.7);
+  --marco-b: rgba(226, 246, 236, 0.7);
+  color-scheme: light;
+}
+
+/* Tailwind lee las variables (inline = usa var() directamente, así cambian con el tema) */
+@theme inline {
+  --color-fondo: var(--c-fondo);
+  --color-cristal: var(--c-cristal);
+  --color-linea: var(--c-linea);
+  --color-neon: var(--c-neon);
+  --color-neon2: var(--c-neon2);
+  --color-texto: var(--c-texto);
+  --color-suave: var(--c-suave);
   --font-titulo: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
   --font-texto: "Barlow", system-ui, sans-serif;
 }
 
 html { scroll-behavior: smooth; }
-
-/* Fondo con dos resplandores verdes a los lados */
 body {
   @apply text-texto font-texto min-h-screen p-5;
-  background:
-    radial-gradient(60% 50% at 8% 40%, rgba(18, 214, 176, 0.16), transparent 70%),
-    radial-gradient(50% 45% at 95% 75%, rgba(57, 255, 154, 0.14), transparent 70%),
-    var(--color-fondo);
+  background: var(--c-fondo);
+  transition: background-color 0.4s, color 0.4s;
 }
 
-/* Marco principal que envuelve toda la web */
+/* ===== Fondo animado: rejilla que avanza + dos orbes que flotan ===== */
+.rejilla {
+  position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-image:
+    linear-gradient(rgb(var(--glow) / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--glow) / 0.09) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 78%);
+  animation: deriva 6s linear infinite;
+}
+.orbe {
+  position: fixed; z-index: -1; pointer-events: none; border-radius: 50%; filter: blur(70px);
+  width: 34rem; height: 34rem; opacity: 0.35;
+  background: radial-gradient(circle, rgb(var(--glow) / 0.55), transparent 70%);
+  animation: flotar 14s ease-in-out infinite alternate;
+}
+.orbe.a { top: -8rem; left: -10rem; }
+.orbe.b { bottom: -10rem; right: -8rem; animation-delay: -6s; background: radial-gradient(circle, rgb(18 214 176 / 0.5), transparent 70%); }
+
+/* ===== Marco, tarjetas y botones ===== */
 .marco {
   @apply mx-auto max-w-5xl rounded-3xl border border-linea px-6 sm:px-10;
-  background: linear-gradient(160deg, rgba(10, 40, 28, 0.55), rgba(3, 13, 9, 0.6));
-  box-shadow: 0 0 60px rgba(57, 255, 154, 0.12), inset 0 0 40px rgba(57, 255, 154, 0.04);
+  background: linear-gradient(160deg, var(--marco-a), var(--marco-b));
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 60px rgb(var(--glow) / 0.12), inset 0 0 40px rgb(var(--glow) / 0.04);
 }
-
-/* Tarjeta de cristal con brillo interior */
 .cristal {
   @apply rounded-2xl border border-linea bg-cristal;
-  box-shadow: inset 0 0 24px rgba(57, 255, 154, 0.05);
+  box-shadow: inset 0 0 24px rgb(var(--glow) / 0.05);
 }
-
-/* Botón principal con degradado y halo neón; .fantasma es la versión de contorno */
+/* Efecto al pasar el ratón: sube, el borde se ilumina y aparece un halo */
+.tarjeta { transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; }
+.tarjeta:hover {
+  transform: translateY(-4px); border-color: var(--c-neon);
+  box-shadow: 0 0 28px rgb(var(--glow) / 0.35), inset 0 0 24px rgb(var(--glow) / 0.08);
+}
 .boton {
   @apply inline-block rounded-xl px-6 py-3 font-medium text-fondo;
-  background: linear-gradient(135deg, var(--color-neon), var(--color-neon2));
-  box-shadow: 0 0 22px rgba(57, 255, 154, 0.45);
+  background: linear-gradient(135deg, var(--c-neon), var(--c-neon2));
+  box-shadow: 0 0 22px rgb(var(--glow) / 0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.boton:hover { box-shadow: 0 0 34px rgba(57, 255, 154, 0.8); }
-.boton.fantasma {
-  @apply border border-neon text-neon;
-  background: transparent;
-  box-shadow: none;
+.boton:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgb(var(--glow) / 0.8); }
+.boton.fantasma { @apply border border-neon text-neon; background: transparent; box-shadow: none; }
+.boton.fantasma:hover { background: rgb(var(--glow) / 0.12); box-shadow: 0 0 24px rgb(var(--glow) / 0.4); }
+
+/* ===== Emblema del inicio ===== */
+.emblema { filter: drop-shadow(0 0 10px var(--c-neon)) drop-shadow(0 0 26px rgb(var(--glow) / 0.6)); animation: pulso 4s ease-in-out infinite; }
+.anillo-lento, .anillo-inverso, .anillo-punteado, .orbita { transform-origin: center; transform-box: view-box; }
+.anillo-lento { animation: giro 28s linear infinite; }
+.anillo-inverso { animation: giro 20s linear infinite reverse; }
+.anillo-punteado { animation: giro 60s linear infinite; }
+.orbita { animation: giro 7s linear infinite; }
+/* Línea de escaneo que recorre la tarjeta del emblema */
+.escaner { position: relative; overflow: hidden; }
+.escaner::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c-neon), transparent);
+  box-shadow: 0 0 14px var(--c-neon); animation: escaneo 5s ease-in-out infinite;
 }
 
-/* Emblema del inicio: único elemento con movimiento (pulso de brillo) */
-.emblema { filter: drop-shadow(0 0 10px var(--color-neon)) drop-shadow(0 0 26px rgba(57, 255, 154, 0.6)); animation: pulso 4s ease-in-out infinite; }
-@keyframes pulso {
-  50% { filter: drop-shadow(0 0 16px var(--color-neon)) drop-shadow(0 0 44px rgba(57, 255, 154, 0.9)); }
-}
-@media (prefers-reduced-motion: reduce) { .emblema { animation: none; } html { scroll-behavior: auto; } }
+/* ===== Texto que se escribe solo ===== */
+.cursor { display: inline-block; width: 0.55ch; height: 1.1em; margin-left: 2px; vertical-align: -0.15em; background: var(--c-neon); animation: parpadeo 1s steps(1) infinite; }
 
-a:focus-visible { outline: 2px solid var(--color-neon); outline-offset: 3px; }
+/* ===== Entradas escalonadas (al cargar cada página) ===== */
+.aparece { animation: aparece 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+@keyframes deriva { to { background-position: 48px 48px; } }
+@keyframes flotar { to { transform: translate(60px, 40px) scale(1.15); } }
+@keyframes giro { to { transform: rotate(360deg); } }
+@keyframes pulso { 50% { filter: drop-shadow(0 0 16px var(--c-neon)) drop-shadow(0 0 44px rgb(var(--glow) / 0.9)); } }
+@keyframes escaneo { 0% { top: 0; opacity: 0; } 10%, 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+@keyframes parpadeo { 50% { opacity: 0; } }
+@keyframes aparece { from { opacity: 0; transform: translateY(18px); } }
+
+/* Quien prefiere menos movimiento lo tiene todo quieto */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+a:focus-visible, button:focus-visible { outline: 2px solid var(--c-neon); outline-offset: 3px; }

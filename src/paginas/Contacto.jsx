@@ -8,13 +8,13 @@ const contactos = [
 export default function Contacto() {
   return (
     <section>
-      <h1 className="font-titulo text-5xl font-bold uppercase">Contacto</h1>
+      <h1 className="aparece font-titulo text-5xl font-bold uppercase">Contacto</h1>
       <p className="mt-6 max-w-xl text-lg text-suave">
         Escríbeme por cualquiera de estos canales.
       </p>
       <ul className="mt-8 flex flex-wrap gap-4">
         {contactos.map((contacto, i) => (
-          <li key={contacto.nombre}>
+          <li key={contacto.nombre} className="aparece" style={{ "--i": i + 1 }}>
             {/* El primer botón va relleno y el resto de contorno */}
             <a href={contacto.url} className={i === 0 ? "boton" : "boton fantasma"}>
               {contacto.nombre}

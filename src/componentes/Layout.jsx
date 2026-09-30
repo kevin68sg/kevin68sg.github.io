@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import BotonTema from "./BotonTema.jsx";
 
 const enlaces = [
   { ruta: "/", texto: "Inicio" },
@@ -7,7 +8,6 @@ const enlaces = [
   { ruta: "/contacto", texto: "Contacto" },
 ];
 
-// Enlace activo: subrayado neón con halo; inactivo: gris verdoso
 function claseEnlace({ isActive }) {
   if (isActive) {
     return "border-b-2 border-neon pb-1 font-medium text-neon";
@@ -17,33 +17,44 @@ function claseEnlace({ isActive }) {
 }
 
 export default function Layout() {
+  const { pathname } = useLocation(); // sirve de "key" para animar cada cambio de página
+
   return (
-    <div className="marco flex min-h-[calc(100vh-2.5rem)] flex-col">
-      <header className="flex w-full flex-wrap items-center gap-x-8 gap-y-3 py-7">
-        {/* Logo circular con la inicial */}
-        <NavLink
-          to="/"
-          aria-label="Inicio"
-          className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-neon to-neon2 font-titulo text-xl font-bold text-fondo shadow-[0_0_16px_rgba(57,255,154,0.6)]"
-        >
-          K
-        </NavLink>
-        <nav className="flex flex-wrap gap-6 text-sm">
-          {enlaces.map((enlace) => (
-            <NavLink key={enlace.ruta} to={enlace.ruta} end className={claseEnlace}>
-              {enlace.texto}
-            </NavLink>
-          ))}
-        </nav>
-      </header>
+    <>
+      {/* Capas de fondo animadas (decorativas) */}
+      <div className="rejilla" aria-hidden="true" />
+      <div className="orbe a" aria-hidden="true" />
+      <div className="orbe b" aria-hidden="true" />
 
-      <main className="w-full flex-1 py-8">
-        <Outlet />
-      </main>
+      <div className="marco flex min-h-[calc(100vh-2.5rem)] flex-col">
+        <header className="flex w-full flex-wrap items-center gap-x-8 gap-y-3 py-7">
+          <NavLink
+            to="/"
+            aria-label="Inicio"
+            className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-neon to-neon2 font-titulo text-xl font-bold text-fondo shadow-[0_0_16px_rgb(var(--glow)/0.6)]"
+          >
+            K
+          </NavLink>
+          <nav className="flex flex-wrap gap-6 text-sm">
+            {enlaces.map((enlace) => (
+              <NavLink key={enlace.ruta} to={enlace.ruta} end className={claseEnlace}>
+                {enlace.texto}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="ml-auto">
+            <BotonTema />
+          </div>
+        </header>
 
-      <footer className="w-full border-t border-linea py-6 text-sm text-suave">
-        © 2026 Kevin
-      </footer>
-    </div>
+        <main key={pathname} className="w-full flex-1 py-8">
+          <Outlet />
+        </main>
+
+        <footer className="w-full border-t border-linea py-6 text-sm text-suave">
+          © 2026 Kevin
+        </footer>
+      </div>
+    </>
   );
 }

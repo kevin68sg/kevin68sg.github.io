@@ -10,6 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Barlow Condensed para títulos, Barlow para texto -->
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      /* Lee el tema guardado; si no hay, respeta la preferencia del sistema */
+      try {
+        var t = localStorage.getItem("tema");
+        if (!t) t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.dataset.theme = t;
+      } catch (e) { document.documentElement.dataset.theme = "dark"; }
+    </script>
   </head>
   <body>
     <div id="root"></div>
