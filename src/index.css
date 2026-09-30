@@ -1,20 +1,60 @@
 @import "tailwindcss";
 
+/* Tokens del tema: Tailwind genera bg-fondo, text-neon, border-linea, etc. */
 @theme {
-  --color-papel: #eef1f5;
-  --color-tinta: #1b2433;
-  --color-suave: #5b667a;
-  --color-linea: #d5dbe5;
-  --color-cobalto: #2f5bea;
-  --font-titulo: "Bricolage Grotesque", sans-serif;
-  --font-texto: "Public Sans", sans-serif;
+  --color-fondo: #030d09;               /* verde casi negro */
+  --color-cristal: rgba(20, 60, 44, 0.35); /* superficie translúcida */
+  --color-linea: rgba(57, 255, 154, 0.28); /* bordes neón suaves */
+  --color-neon: #39ff9a;                /* verde tecnológico principal */
+  --color-neon2: #12d6b0;               /* verde azulado secundario */
+  --color-texto: #e8fff3;
+  --color-suave: #8fb8a4;
+  --font-titulo: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-texto: "Barlow", system-ui, sans-serif;
 }
 
+html { scroll-behavior: smooth; }
+
+/* Fondo con dos resplandores verdes a los lados */
 body {
-  @apply bg-papel text-tinta font-texto;
+  @apply text-texto font-texto min-h-screen p-5;
+  background:
+    radial-gradient(60% 50% at 8% 40%, rgba(18, 214, 176, 0.16), transparent 70%),
+    radial-gradient(50% 45% at 95% 75%, rgba(57, 255, 154, 0.14), transparent 70%),
+    var(--color-fondo);
 }
 
-a:focus-visible {
-  outline: 2px solid var(--color-cobalto);
-  outline-offset: 3px;
+/* Marco principal que envuelve toda la web */
+.marco {
+  @apply mx-auto max-w-5xl rounded-3xl border border-linea px-6 sm:px-10;
+  background: linear-gradient(160deg, rgba(10, 40, 28, 0.55), rgba(3, 13, 9, 0.6));
+  box-shadow: 0 0 60px rgba(57, 255, 154, 0.12), inset 0 0 40px rgba(57, 255, 154, 0.04);
 }
+
+/* Tarjeta de cristal con brillo interior */
+.cristal {
+  @apply rounded-2xl border border-linea bg-cristal;
+  box-shadow: inset 0 0 24px rgba(57, 255, 154, 0.05);
+}
+
+/* Botón principal con degradado y halo neón; .fantasma es la versión de contorno */
+.boton {
+  @apply inline-block rounded-xl px-6 py-3 font-medium text-fondo;
+  background: linear-gradient(135deg, var(--color-neon), var(--color-neon2));
+  box-shadow: 0 0 22px rgba(57, 255, 154, 0.45);
+}
+.boton:hover { box-shadow: 0 0 34px rgba(57, 255, 154, 0.8); }
+.boton.fantasma {
+  @apply border border-neon text-neon;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Emblema del inicio: único elemento con movimiento (pulso de brillo) */
+.emblema { filter: drop-shadow(0 0 10px var(--color-neon)) drop-shadow(0 0 26px rgba(57, 255, 154, 0.6)); animation: pulso 4s ease-in-out infinite; }
+@keyframes pulso {
+  50% { filter: drop-shadow(0 0 16px var(--color-neon)) drop-shadow(0 0 44px rgba(57, 255, 154, 0.9)); }
+}
+@media (prefers-reduced-motion: reduce) { .emblema { animation: none; } html { scroll-behavior: auto; } }
+
+a:focus-visible { outline: 2px solid var(--color-neon); outline-offset: 3px; }
